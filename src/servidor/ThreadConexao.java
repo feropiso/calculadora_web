@@ -1,4 +1,4 @@
-package trabalho_ii;
+package servidor;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+/**************************************************************************************************
+ * Autor: Fernando Rodrigo Pinheiro de Sousa
+ * 
+ * Classe processa a criação de requisicao a partir do InputStream do cliente;
+ * Abre o arquivo pelo caminho conseguido da requisição;
+ * Cria a resposta passando o conteúdo do arquivo e o cabeçalho da resposta no formato pardão HTTP;
+ * cria o canal de resposta utilizando o outputStream.
+ * ************************************************************************************************/
 
 public class ThreadConexao implements Runnable {
 	
@@ -26,66 +32,56 @@ public class ThreadConexao implements Runnable {
 
 		conectado = true;
 		
-		// imprime na tela o IP do cliente
-		System.out.println(socket.getInetAddress());
 		while (conectado) {
 			try {
 				
-				// cria uma requisicao a partir do InputStream do cliente
 				RequisicaoHTTP requisicao = RequisicaoHTTP.lerRequisicao(socket.getInputStream());
-				// se a conexao esta marcada para se mantar viva entao seta keepalive e o
-				// timeout
+				
 				if (requisicao.isManterViva()) {
 					socket.setKeepAlive(true);
 					socket.setSoTimeout(requisicao.getTempoLimite());
-				} else {
-					// se nao seta um valor menor suficiente para uma requisicao
+				} else {					
 					socket.setSoTimeout(300);
 				}
-
-				// se o caminho foi igual a / entao deve pegar o /index.html
+								
 				if (requisicao.getRecurso().equals("/")) {
-					requisicao.setRecurso("index.html");
-				}
-				// abre o arquivo pelo caminho
-				File arquivo = new File(requisicao.getRecurso().replaceFirst("/", ""));
-
+					requisicao.setRecurso("calculadora/index.html");
+				}				
+				
+				File arquivo = new File(requisicao.getRecurso());
+				
 				RespostaHTTP resposta;
-
-				// se o arquivo existir então criamos a reposta de sucesso, com status 200
+				
 				if (arquivo.exists()) {
 					resposta = new RespostaHTTP(requisicao.getProtocolo(), 200, "OK");
 				} else {
-					// se o arquivo não existe então criamos a reposta de erro, com status 404
+					
 					resposta = new RespostaHTTP(requisicao.getProtocolo(), 404, "Not Found");
-					arquivo = new File("404.html");
+					arquivo = new File("calculadora/recursos/404.html");
 				}
 				
-				// lê todo o conteúdo do arquivo para bytes e gera o conteudo de resposta
-				resposta.setConteudoResposta(Files.readAllBytes(arquivo.toPath()));
 				
-				// converte o formato para o GMT espeficicado pelo protocolo HTTP
-				String dataFormatada = formatarDataGMT(new Date());
+				resposta.setConteudoResposta(Files.readAllBytes(arquivo.toPath()));				
 				
-				// cabeçalho padrão da resposta HTTP/1.1
+				String dataFormatada = formatarDataGMT(new Date());								
+				
 				resposta.setCabecalho("Location", "http://localhost:9090/");
 				resposta.setCabecalho("Date", dataFormatada);
 				resposta.setCabecalho("Server", "MeuServidor/1.0");
 				resposta.setCabecalho("Content-Type", "text/html");
 				resposta.setCabecalho("Content-Length", resposta.getTamanhoResposta());
-				
-				// cria o canal de resposta utilizando o outputStream
+				 
 				resposta.setSaida(socket.getOutputStream());
 				resposta.enviar();
 				
 			} catch (IOException ex) {
-				// quando o tempo limite terminar encerra a thread
+				
 				if (ex instanceof SocketTimeoutException) {
 					try {
 						conectado = false;
 						socket.close();
 					} catch (IOException ex1) {
-						Logger.getLogger(ThreadConexao.class.getName()).log(Level.SEVERE, null, ex1);
+						ex1.printStackTrace();
 					}
 				}
 			}
@@ -96,11 +92,10 @@ public class ThreadConexao implements Runnable {
 	
 	public static String formatarDataGMT(Date date) {
 		
-		//cria um formato para o GMT espeficicado pelo HTTP
         SimpleDateFormat formatador = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss", Locale.ENGLISH);
         formatador.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date data = new Date();
-        //Formata a dara para o padrao
+       
         return formatador.format(data) + " GMT";
 	}
 

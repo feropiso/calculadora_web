@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Calculadora Simples</title>
+	<style>
+		.calculadora {
+			width: 300px;
+			margin: 0 auto;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			background-color: #f9f9f9;
+		}
+		
+		.areaCalculadora{
+			width: 100%;
+			margin: 10px 10px 10px 20px;
+		}
+
+		input[type="text"] {
+			width: 90%;
+			padding: 10px;
+			margin-bottom: 10px;
+		}
+
+		input[type="button"] {
+			width: 50px;
+			height: 50px;
+			font-size: 18px;
+			margin: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="calculadora">
+		<input type="text" id="display" disabled>
+		<div class="areaCalculadora">
+			<div>
+				<input type="button" value="7" onclick="addToDisplay('7')">
+				<input type="button" value="8" onclick="addToDisplay('8')">
+				<input type="button" value="9" onclick="addToDisplay('9')">
+				<input type="button" value="+" onclick="addToDisplay('+')">
+			</div>
+			<div>
+				<input type="button" value="4" onclick="addToDisplay('4')">
+				<input type="button" value="5" onclick="addToDisplay('5')">
+				<input type="button" value="6" onclick="addToDisplay('6')">
+				<input type="button" value="-" onclick="addToDisplay('-')">
+			</div>
+			<div>
+				<input type="button" value="1" onclick="addToDisplay('1')">
+				<input type="button" value="2" onclick="addToDisplay('2')">
+				<input type="button" value="3" onclick="addToDisplay('3')">
+				<input type="button" value="*" onclick="addToDisplay('*')">
+			</div>
+			<div>
+				<input type="button" value="0" onclick="addToDisplay('0')">
+				<input type="button" value="C" onclick="clearDisplay()">
+				<input type="button" value="=" onclick="calculate()">
+				<input type="button" value="/" onclick="addToDisplay('/')">
+			</div>
+		</div>
+	</div>
+
+	<script>
+		
+		var display = document.getElementById('display');
+		
+		function addToDisplay(value) {
+			
+			display.value += value;
+		}
+
+		function clearDisplay() {
+			display.value = '';
+		}
+
+		function calculate() {
+			try {
+				var result = eval(display.value);
+				display.value = result;
+			} catch (error) {
+				display.value = 'Erro';
+			}
+		}
+	</script>
+</body>
+
+</html>

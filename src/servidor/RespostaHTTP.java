@@ -1,4 +1,4 @@
-package trabalho_ii;
+package servidor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+/**************************************************************************************************
+ * Autor: Fernando Rodrigo Pinheiro de Sousa
+ * 
+ * Classe que recebe o protocolo, codigo e a mensagem, para construir a resposta HTTP. 
+ * ************************************************************************************************/
 
 public class RespostaHTTP {
 	
@@ -27,11 +32,9 @@ public class RespostaHTTP {
 	}
 	
 	public void enviar() throws IOException {
-        //escreve o headers em bytes
-        saida.write(montaCabecalho());
-        //escreve o conteudo em bytes
-        saida.write(conteudoResposta);
-        //encerra a resposta
+        
+        saida.write(montaCabecalho());        
+        saida.write(conteudoResposta);        
         saida.flush();
     }
 	
