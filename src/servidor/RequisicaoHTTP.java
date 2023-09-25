@@ -36,11 +36,11 @@ public class RequisicaoHTTP {
         System.out.println(linhaRequisicao);
         
         String[] dadosReq = linhaRequisicao.split(" ");
-        
-        requisicao.setMetodo(dadosReq[0]);        
+    	
+    	requisicao.setMetodo(dadosReq[0]);        
         requisicao.setRecurso(dadosReq[1]);        
-        requisicao.setProtocolo(dadosReq[2]);
-        
+        requisicao.setProtocolo(dadosReq[2]);   
+                
         String dadosHeader = buffer.readLine();        
         
         while (dadosHeader != null && !dadosHeader.isEmpty()) {

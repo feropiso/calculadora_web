@@ -15,7 +15,7 @@ import java.util.TimeZone;
  * Classe processa a criação de requisicao a partir do InputStream do cliente;
  * Abre o arquivo pelo caminho conseguido da requisição;
  * Cria a resposta passando o conteúdo do arquivo e o cabeçalho da resposta no formato pardão HTTP;
- * cria o canal de resposta utilizando o outputStream.
+ * Cria o canal de resposta utilizando o outputStream.
  * ************************************************************************************************/
 
 public class ThreadConexao implements Runnable {
